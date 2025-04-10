@@ -7,10 +7,9 @@ import org.example.bootsecurity.service.MemoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.time.LocalDateTime;
 
 @Controller
 public class MainController {
@@ -40,11 +39,24 @@ public class MainController {
         return "redirect:/";
     }
 
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        String msg = "%d를 정상적으로 삭제하였습니다.".formatted(id);
+        redirectAttributes.addFlashAttribute("msg", msg);
+        memoService.deleteById(id);
+        return "redirect:/";
+    }
+
     @PostMapping("/delete-all")
     public String deleteAll(RedirectAttributes redirectAttributes) throws Exception {
         memoService.deleteAll();
         // addAttribute -> 주소창 => controller가 한 번 더 받아줘야함
         redirectAttributes.addFlashAttribute("msg", "전체 삭제");
         return "redirect:/";
+    }
+
+    @GetMapping("/update/{id}")
+    public String update(@PathVariable("id") Long id, Model model) {
+        return "update";
     }
 }
